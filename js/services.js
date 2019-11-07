@@ -170,13 +170,14 @@ var Services = (function () {
     function jobMapping(url, data) {
       var basicColor = (data.color || '').replace(buildingRegExp, '');
       var lastBuild = data.lastCompletedBuild || {};
+      var building = buildingRegExp.test(data.color);
       return {
         name: data.displayName || data.name || data.nodeName || 'All jobs',
         url: decodeURI(data.url || url),
-        building: buildingRegExp.test(data.color),
-        status: status[basicColor] || basicColor,
-        statusClass: colorToClass[basicColor] || '',
-        statusIcon: colorToIcon[basicColor] || 'grey',
+        building: building,
+        status: building ? 'In progress' : (status[basicColor] || basicColor),
+        statusClass: building ? 'warning' : (colorToClass[basicColor] || ''),
+        statusIcon: building ? 'yellow' : (colorToIcon[basicColor] || 'grey'),
         lastBuildNumber: lastBuild.number || '',
         lastBuildTime: '',
         jobs: data.jobs && data.jobs.reduce(function (jobs, data) {
